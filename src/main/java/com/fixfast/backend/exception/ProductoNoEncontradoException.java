@@ -1,0 +1,13 @@
+package com.fixfast.backend.exception;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public class ProductoNoEncontradoException extends RuntimeException {
+
+    public ProductoNoEncontradoException(Long id) {
+        super("Producto con id %d no encontrado".formatted(id));
+    }
+}
+

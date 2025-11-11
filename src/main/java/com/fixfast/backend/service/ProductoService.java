@@ -1,6 +1,6 @@
 package com.fixfast.backend.service;
 
-import com.fixfast.backend.converter.ProductoMapper;
+import com.fixfast.backend.mapper.ProductoMapper;
 import com.fixfast.backend.dto.ProductoRequest;
 import com.fixfast.backend.dto.ProductoResponse;
 import com.fixfast.backend.entity.Producto;

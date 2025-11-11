@@ -1,4 +1,4 @@
-package com.fixfast.backend.converter;
+package com.fixfast.backend.mapper;
 
 import com.fixfast.backend.dto.ProductoRequest;
 import com.fixfast.backend.dto.ProductoResponse;

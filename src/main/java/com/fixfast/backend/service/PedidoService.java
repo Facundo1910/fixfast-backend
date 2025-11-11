@@ -1,6 +1,6 @@
 package com.fixfast.backend.service;
 
-import com.fixfast.backend.converter.PedidoMapper;
+import com.fixfast.backend.mapper.PedidoMapper;
 import com.fixfast.backend.dto.CrearPedidoRequest;
 import com.fixfast.backend.dto.ItemPedidoDTO;
 import com.fixfast.backend.dto.PedidoResponse;

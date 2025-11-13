@@ -1,7 +1,7 @@
 package com.fixfast.backend.controller;
 
-import com.fixfast.backend.dto.ProductoRequest;
-import com.fixfast.backend.dto.ProductoResponse;
+import com.fixfast.backend.dto.request.ProductoRequest;
+import com.fixfast.backend.dto.response.ProductoResponse;
 import com.fixfast.backend.service.ProductoService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

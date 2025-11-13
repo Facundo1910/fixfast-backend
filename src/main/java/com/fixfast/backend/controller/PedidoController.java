@@ -1,8 +1,8 @@
 package com.fixfast.backend.controller;
 
-import com.fixfast.backend.dto.CrearPedidoRequest;
-import com.fixfast.backend.dto.PedidoResponse;
-import com.fixfast.backend.dto.PedidoResponseDTO;
+import com.fixfast.backend.dto.request.CrearPedidoRequest;
+import com.fixfast.backend.dto.response.PedidoResponse;
+import com.fixfast.backend.dto.response.PedidoResumenResponse;
 import com.fixfast.backend.service.PedidoService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -33,8 +33,8 @@ public class PedidoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PedidoResponseDTO>> listarPedidos() {
-        List<PedidoResponseDTO> pedidos = pedidoService.listarPedidos();
+    public ResponseEntity<List<PedidoResumenResponse>> listarPedidos() {
+        List<PedidoResumenResponse> pedidos = pedidoService.listarPedidos();
         return ResponseEntity.ok(pedidos);
     }
 

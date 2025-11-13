@@ -1,9 +1,9 @@
-package com.fixfast.backend.dto;
+package com.fixfast.backend.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
-public record ItemPedidoDTO(
+public record ItemPedidoRequest(
 
         @NotNull(message = "El identificador del producto es obligatorio")
         Long productoId,

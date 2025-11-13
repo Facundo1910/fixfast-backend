@@ -1,10 +1,10 @@
 package com.fixfast.backend.service;
 
 import com.fixfast.backend.mapper.PedidoMapper;
-import com.fixfast.backend.dto.CrearPedidoRequest;
-import com.fixfast.backend.dto.ItemPedidoDTO;
-import com.fixfast.backend.dto.PedidoResponse;
-import com.fixfast.backend.dto.PedidoResponseDTO;
+import com.fixfast.backend.dto.request.CrearPedidoRequest;
+import com.fixfast.backend.dto.request.ItemPedidoRequest;
+import com.fixfast.backend.dto.response.PedidoResponse;
+import com.fixfast.backend.dto.response.PedidoResumenResponse;
 import com.fixfast.backend.entity.Pedido;
 import com.fixfast.backend.entity.PedidoItem;
 import com.fixfast.backend.entity.Producto;
@@ -25,68 +25,59 @@ public class PedidoService {
     private final PedidoRepository pedidoRepository;
     private final ProductoRepository productoRepository;
     private final PedidoMapper pedidoMapper;
-    private final DescuentoTransaccionalService descuentoTransaccionalService;
+    private final DescuentoService descuentoService;
 
     public PedidoService(PedidoRepository pedidoRepository,
                          ProductoRepository productoRepository,
                          PedidoMapper pedidoMapper,
-                         DescuentoTransaccionalService descuentoTransaccionalService) {
+                         DescuentoService descuentoService) {
         this.pedidoRepository = pedidoRepository;
         this.productoRepository = productoRepository;
         this.pedidoMapper = pedidoMapper;
-        this.descuentoTransaccionalService = descuentoTransaccionalService;
+        this.descuentoService = descuentoService;
     }
 
     @Transactional
     public PedidoResponse crearPedido(CrearPedidoRequest request) {
         Pedido pedido = new Pedido(request.nombreComprador());
-        BigDecimal totalBruto = BigDecimal.ZERO;
 
-        List<ItemPedidoDTO> items = request.items();
+        BigDecimal totalBruto = request.items().stream()
+                .map(itemRequest -> procesarItemPedido(pedido, itemRequest))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        for (ItemPedidoDTO itemRequest : items) {
-            Producto producto = productoRepository.findById(itemRequest.productoId())
-                    .orElseThrow(() -> new ProductoNoEncontradoException(itemRequest.productoId()));
-
-            validarStockDisponible(producto, itemRequest.cantidad());
-
-            actualizarStock(producto, itemRequest.cantidad());
-
-            BigDecimal subtotal = producto.getPrecioUnitario()
-                    .multiply(BigDecimal.valueOf(itemRequest.cantidad()));
-
-            PedidoItem item = new PedidoItem(
-                    producto,
-                    itemRequest.cantidad(),
-                    producto.getPrecioUnitario(),
-                    subtotal
-            );
-
-            pedido.agregarItem(item);
-            totalBruto = totalBruto.add(subtotal);
-        }
-
-        BigDecimal descuento = descuentoTransaccionalService.calcularDescuento(totalBruto);
+        BigDecimal descuento = descuentoService.calcularDescuento(totalBruto);
         pedido.calcularTotales(totalBruto, descuento);
 
         Pedido guardado = pedidoRepository.save(pedido);
         return pedidoMapper.toResponse(guardado);
     }
 
-    @Transactional(readOnly = true)
-    public List<PedidoResponseDTO> listarPedidos() {
+    public List<PedidoResumenResponse> listarPedidos() {
         return pedidoRepository.findAll()
                 .stream()
-                .map(pedidoMapper::toResumen)
+                .map(pedidoMapper::toPedidoResumen)
                 .toList();
     }
 
-    @Transactional(readOnly = true)
     public PedidoResponse obtenerPedido(Long id) {
         Pedido pedido = pedidoRepository.findById(id)
                 .orElseThrow(() -> new PedidoNoEncontradoException(id));
         return pedidoMapper.toResponse(pedido);
     }
+
+    private BigDecimal procesarItemPedido(Pedido pedido, ItemPedidoRequest itemRequest) {
+        Producto producto = productoRepository.findById(itemRequest.productoId())
+                .orElseThrow(() -> new ProductoNoEncontradoException(itemRequest.productoId()));
+
+        validarStockDisponible(producto, itemRequest.cantidad());
+        actualizarStock(producto, itemRequest.cantidad());
+
+        PedidoItem item = pedidoMapper.toPedidoItemEntity(itemRequest, producto);
+        pedido.agregarItem(item);
+
+        return item.getSubtotal();
+    }
+
 
     private void validarStockDisponible(Producto producto, Integer cantidadSolicitada) {
         if (producto.getStockActual() < cantidadSolicitada) {
@@ -99,4 +90,3 @@ public class PedidoService {
         producto.setStockActual(nuevoStock);
     }
 }
-

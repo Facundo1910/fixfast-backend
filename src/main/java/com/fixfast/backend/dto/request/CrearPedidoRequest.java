@@ -1,4 +1,4 @@
-package com.fixfast.backend.dto;
+package com.fixfast.backend.dto.request;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -12,7 +12,7 @@ public record CrearPedidoRequest(
         String nombreComprador,
 
         @NotEmpty(message = "Debe incluir al menos un item en el pedido")
-        List<@Valid ItemPedidoDTO> items
+        List<@Valid ItemPedidoRequest> items
 ) {
 }
 

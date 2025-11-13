@@ -1,8 +1,8 @@
 package com.fixfast.backend.service;
 
 import com.fixfast.backend.mapper.ProductoMapper;
-import com.fixfast.backend.dto.ProductoRequest;
-import com.fixfast.backend.dto.ProductoResponse;
+import com.fixfast.backend.dto.request.ProductoRequest;
+import com.fixfast.backend.dto.response.ProductoResponse;
 import com.fixfast.backend.entity.Producto;
 import com.fixfast.backend.exception.ProductoNoEncontradoException;
 import com.fixfast.backend.repository.ProductoRepository;

@@ -1,4 +1,4 @@
-package com.fixfast.backend.dto;
+package com.fixfast.backend.dto.response;
 
 import java.math.BigDecimal;
 

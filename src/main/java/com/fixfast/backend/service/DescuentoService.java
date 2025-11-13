@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 @Service
-public class DescuentoTransaccionalService {
+public class DescuentoService {
 
     private static final BigDecimal UMBRAL_DESCUENTO_MEDIA = BigDecimal.valueOf(1000);
     private static final BigDecimal UMBRAL_DESCUENTO_ALTA = BigDecimal.valueOf(5000);
